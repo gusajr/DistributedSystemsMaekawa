@@ -1,0 +1,1 @@
+Proceso con id: 61511 entró a sección crítica

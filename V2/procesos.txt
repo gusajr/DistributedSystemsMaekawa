@@ -1,0 +1,5 @@
+Proceso con id: 61075 entró a sección crítica
+Proceso con id: 61072 entró a sección crítica
+Proceso con id: 61074 entró a sección crítica
+Proceso con id: 61077 entró a sección crítica
+Proceso con id: 61072 entró a sección crítica

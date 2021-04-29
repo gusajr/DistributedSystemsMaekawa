@@ -1,0 +1,3 @@
+Proceso con id: 60012 entró a zona crítica
+Proceso con id: 60007 entró a zona crítica
+Proceso con id: 60009 entró a zona crítica

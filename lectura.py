@@ -1,0 +1,7 @@
+archivo = open("procesos.txt","r+")
+archivo_temp = archivo.read()
+archivo_temp = (archivo_temp, "holamundo\n")
+archivo_temp = ''.join(archivo_temp)
+print(archivo_temp)
+archivo.write("holamundo\n")
+archivo.close()
