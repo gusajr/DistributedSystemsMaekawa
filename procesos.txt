@@ -1,3 +1,2 @@
-Proceso con id: 60012 entró a zona crítica
-Proceso con id: 60007 entró a zona crítica
-Proceso con id: 60009 entró a zona crítica
+Proceso con id: 5557 entra a seccion critica a las:1hrs44min29s
+Proceso con id: 5555 entra a seccion critica a las:1hrs44min34s

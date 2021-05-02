@@ -4,11 +4,16 @@ import zmq
 import threading as th
 import json
 import queue as q
+import datetime
 
 nodos_adyacentes = ["5555","5556","5557"]
 #nodos_adyacentes = ["5556","5555","5558"]
 #nodos_adyacentes = ["5557","5555","5558"]
 #nodos_adyacentes = ["5558","5556","5557"]
+
+#archivo que modificarán los procesos
+archivo = open("procesos.txt","w")
+archivo.close()
 
 global state
 global voted
@@ -39,12 +44,12 @@ def valorarRespuesta(socket,message):
                 pendient_queue.append(message["id"])
                 print(pendient_queue)
                 print("se encola")
-            return    {
-                "solicitud":"failed",
-                "id":message["id"]
-            }
+                return    {
+                    "solicitud":"failed",
+                    "id":message["id"]
+                }
         else:
-            #voted = True
+            voted = True
             print("entra en request")
             return {
                 "solicitud":"accepted",
@@ -78,7 +83,7 @@ def server():
     while True:
         #  Wait for next request from client
         message = recibirRespuesta(socket)
-        print("Received request: %s %s" % (message,nodos_adyacentes[0]))
+        print("Received request: %s %s" % (message,message["id"]))
         #  Do some 'work'
         time.sleep(1)
         #  Send reply back to client
@@ -88,14 +93,14 @@ def server():
         if(message_1["solicitud"] == "accepted"):
             #  Wait for next request from client
             message = recibirRespuesta(socket)
-            print("Received request: %s %s" % (message,nodos_adyacentes[0]))
+            print("Received request: %s %s" % (message,message["id"]))
             #  Do some 'work'
             time.sleep(1)
             #  Send reply back to client
             message_1 = valorarRespuesta(socket, message)
             socket.send_json(message_1)
 
-def preguntar_zona_critica():
+def preguntar_seccion_critica():
     global respuesta
     global n_respuestas
     #global nodo_c_1
@@ -116,7 +121,14 @@ def preguntar_zona_critica():
             while True:
                     if(n_respuestas >= 3):
                         #Hacer la chamba
+                        archivo = open("procesos.txt","r+")
+                        texto_en_archivo=("Proceso con id: ",nodos_adyacentes[0]," entró a sección crítica a las:",str(datetime.datetime.now().hour),"hrs",str(datetime.datetime.now().minute),"min",str(datetime.datetime.now().second),"s","\n")
+                        texto_en_archivo=''.join(texto_en_archivo)
+                        archivo.write(texto_en_archivo)
+                        print(archivo.readlines())
+                        archivo.close()
                         n_respuestas = 0
+                        #Falta salir de sección critica
                         break
 
 def client_1():
@@ -151,24 +163,24 @@ def client_2():
     global n_respuestas
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://localhost:"+nodos_adyacentes[0])
+    socket.connect("tcp://localhost:"+nodos_adyacentes[1])
     #  Do 10 requests, waiting each time for a response
     state = "wanted"
     message = {
         "solicitud":"request",
-        "id":nodos_adyacentes[1]
+        "id":nodos_adyacentes[0]
     }
-    print("Sending request %s %s…" % ("client_1", nodos_adyacentes[1]))
+    print("Sending request %s %s…" % ("client_1", nodos_adyacentes[0]))
     socket.send_json(message)
     #  Get the reply.
     message = socket.recv_json()
-    if(message["id"]==nodos_adyacentes[1] and message["solicitud"]=="accepted"):
+    if(message["id"]==nodos_adyacentes[0] and message["solicitud"]=="accepted"):
         n_respuestas = n_respuestas + 1
         print("aceptado")
         print("Received reply %s [ %s ]" % ("client_1", message))
         message = {
             "solicitud":"released",
-           "id":nodos_adyacentes[1]
+           "id":nodos_adyacentes[0]
         }
         socket.send_json(message)
         socket.recv_json()
@@ -178,30 +190,29 @@ def client_3():
     global n_respuestas
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://localhost:"+nodos_adyacentes[0])
+    socket.connect("tcp://localhost:"+nodos_adyacentes[2])
     #  Do 10 requests, waiting each time for a response
     state = "wanted"
     message = {
         "solicitud":"request",
-        "id":nodos_adyacentes[2]
+        "id":nodos_adyacentes[0]
     }
-    print("Sending request %s %s…" % ("client_1", nodos_adyacentes[2]))
+    print("Sending request %s %s…" % ("client_1", nodos_adyacentes[0]))
     socket.send_json(message)
     #  Get the reply.
     message = socket.recv_json()
-    if(message["id"]==nodos_adyacentes[2] and message["solicitud"]=="accepted"):
+    if(message["id"]==nodos_adyacentes[0] and message["solicitud"]=="accepted"):
         n_respuestas = n_respuestas + 1
         print("aceptado")
         print("Received reply %s [ %s ]" % ("client_1", message))
         message = {
             "solicitud":"released",
-           "id":nodos_adyacentes[2]
+           "id":nodos_adyacentes[0]
         }
         socket.send_json(message)
         socket.recv_json()
 
 print("Estableciendo conexion...")
-sleep(10)
 nodo_s = th.Thread(target=server)
 nodo_s.start()
-preguntar_zona_critica()
+preguntar_seccion_critica()
