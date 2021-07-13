@@ -1,2 +1,6 @@
-Proceso con id: 5557 entra a seccion critica a las:1hrs44min29s
-Proceso con id: 5555 entra a seccion critica a las:1hrs44min34s
+Proceso con id: 5557 entra a seccion critica a las: 15hrs27min25s
+Proceso con id: 5555 entra a seccion critica a las: 15hrs27min35s
+Proceso con id: 5556 entra a seccion critica a las: 15hrs27min45s
+Proceso con id: 5558 entra a seccion critica a las: 15hrs27min55s
+Proceso con id: 5557 entra a seccion critica a las: 15hrs32min41s
+Proceso con id: 5555 entra a seccion critica a las: 15hrs32min51s

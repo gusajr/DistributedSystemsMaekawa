@@ -1,1 +1,1 @@
-Proceso con id: 61511 entró a sección crítica
+Proceso con id: 5557 entra a seccion critica a las: 20hrs27min53s

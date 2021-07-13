@@ -6,14 +6,14 @@ import json
 import queue as q
 import datetime
 
-#nodos_adyacentes = ["5555","5556","5557"]
-nodos_adyacentes = ["5556","5555","5558"]
+nodos_adyacentes = ["5555","5556","5557"]
+#nodos_adyacentes = ["5556","5555","5558"]
 #nodos_adyacentes = ["5557","5555","5558"]
 #nodos_adyacentes = ["5558","5556","5557"]
 
 #archivo que modificarán los procesos
-#archivo = open("procesos.txt","w")
-#archivo.close()
+archivo = open("procesos.txt","w")
+archivo.close()
 
 global state
 global voted
