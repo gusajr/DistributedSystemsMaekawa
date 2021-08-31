@@ -5,7 +5,7 @@ import datetime
 
 procesosTotales = ["5555","5556","5557","5558"]
 
-#Clase nodo que tendrá sus atributos para trabajar de forma independiente
+'''Clase nodo que tendrá sus atributos para trabajar de forma independiente'''
 class Nodo:
     def __init__(self,id):
         self.id = id
@@ -41,7 +41,7 @@ class Nodo:
         self.preguntar_seccion_critica = th.Thread(target=self.preguntar_seccion_critica_1)
         self.preguntar_seccion_critica.start()
 
-    #función para preguntar de forma indefinida si se desea entrar a la sección crítica
+    '''Función para preguntar de forma indefinida si se desea entrar a la sección crítica'''
     def preguntar_seccion_critica_1(self):
         while True:
             if(input("¿Desea entrar a la sección crítica?")):
@@ -55,7 +55,7 @@ class Nodo:
                 self.sockets_cl[1].send_json(message)
                 self.sockets_cl[2].send_json(message)
 
-    #función para iniciar el puerto servidor
+    '''Función para iniciar el puerto servidor'''
     def iniciarServidor(self, puerto):
         context = zmq.Context()
         socket = context.socket(zmq.PULL)
@@ -67,21 +67,19 @@ class Nodo:
             message = socket.recv_json()
             print("mensaje recibido: ", message)
             message = self.valorarRespuesta(message)
-            #seed(1)
-            #time.sleep(random())
-            #socket.send_json(message)
+            print("votación: ",self.votacion,", estado: ",self.estado)
             if(message is not None):
                 self.sockets_cl[0].send_json(message)
                 self.sockets_cl[1].send_json(message)
                 self.sockets_cl[2].send_json(message)
 
-    #función para iniciar comunicación con distintos nodos
+    '''Función para iniciar comunicación con distintos nodos'''
     def iniciarCliente(self, puerto, n_socket):
         self.contexts.append(zmq.Context())
         self.sockets_cl.append(self.contexts[n_socket].socket(zmq.PUSH))
         self.sockets_cl[n_socket].connect("tcp://localhost:"+puerto)
 
-    #función para saber cuál fue la respuesta de parte de los nodos
+    '''Función para saber cuál fue la respuesta de parte de los nodos'''
     def valorarRespuesta(self,message):
         if(message["solicitud"]=="request"):
             if(self.estado=="held" or self.votacion==True):
@@ -95,20 +93,19 @@ class Nodo:
                     }
             else:
                 self.votacion = True
-                print("entra en request")
                 return {
                     "solicitud":"accepted",
                     "id":message["id"]
                 }
                 
         if(message["solicitud"]=="released"):
-            print("entra con released")
             if self.pendientes:
-                print("entra en pendiente")
                 self.votacion = True
+                head = self.pendientes.pop(0)
+                print("se acepta solicitud de: ", head)
                 return{
                     "solicitud":"accepted",
-                    "id":self.pendientes.pop(0)
+                    "id":head
                     }
             else:
                 self.votacion = False
@@ -124,7 +121,7 @@ class Nodo:
                 self.n_respuestas=0
                 self.entrar_seccion_critica()
     
-    #función para la sección crítica
+    '''Función para la sección crítica'''
     def entrar_seccion_critica(self):
         archivo = open("procesos.txt","r+")
         texto_en_archivo=("Proceso con id: ",self.id," entra a seccion critica a las: ",str(datetime.datetime.now().hour),"hrs",str(datetime.datetime.now().minute),"min",str(datetime.datetime.now().second),"s","\n")
@@ -151,4 +148,4 @@ if __name__ == "__main__":
                 break
 
     #se crea objeto nodo
-    nodo1 = Nodo(id)
+    nodo = Nodo(id)
